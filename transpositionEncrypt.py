@@ -1,17 +1,15 @@
 #!/usr/bin/python
 
-
-action = 'decrypt'
-key = 8
-
-
+import math
 
 def main():
+    action = 'decrypt'
+    key = 3
     if action == 'encrypt':
-        text = 'Common sense is not so common.'
+        text = "ABCDEFGHIJKLMNOPQRSTUVWXYZBCDEFGHIJKLMNOPQRSTUVWXYZACDEFGHIJKLMNOPQRSTUVWXYZABDEFGHIJKLMNOPQRSTUVWXYZABCEFGHIJKLMNOPQRSTUVWXYZABCDFGHIJKLMNOPQRSTUVWXYZABCDEGHIJKLMNOPQRSTUVWXYZABCDEFHIJKLMNOPQRSTUVWXYZABCDEFGIJKLMNOPQRSTUVWXYZABCDEFGHJKLMNOPQRSTUVWXYZABCDEFGHIKLMNOPQRSTUVWXYZABCDEFGHIJLMNOPQRSTUVWXYZABCDEFGHIJKMNOPQRSTUVWXYZABCDEFGHIJKLNOPQRSTUVWXYZABCDEFGHIJKLMOPQRSTUVWXYZABCDEFGHIJKLMNPQRSTUVWXYZABCDEFGHIJKLMNOQRSTUVWXYZABCDEFGHIJKLMNOPRSTUVWXYZABCDEFGHIJKLMNOPQSTUVWXYZABCDEFGHIJKLMNOPQRTUVWXYZABCDEFGHIJKLMNOPQRSUVWXYZABCDEFGHIJKLMNOPQRSTVWXYZABCDEFGHIJKLMNOPQRSTUWXYZABCDEFGHIJKLMNOPQRSTUVXYZABCDEFGHIJKLMNOPQRSTUVWYZABCDEFGHIJKLMNOPQRSTUVWXZABCDEFGHIJKLMNOPQRSTUVWXYABCDEFGHIJKLMNOPQRSTUVWXYZ"
         print(encrypt(text, key))
     elif action == 'decrypt':
-        text = 'Cenoonommstmme oo snnio. s s c'
+        text = 'ADGJMPSVYBEHKNQTWZCFILORUXADGJMPSVYBEHKNQTWZCFILORUXADGJMPSVYBEHKNQTWZCFILORUXADGJMPSVYBEHKNQTWZCFILORUXADGJMPSVYBEHKNQTWZCFILORUXADGJMPSVYBEHKNQTWZCFILORUXADGJMPSVYBEHKNQTWZCFILORUXADGJMPSVYBEHKNQTWZCFILORUXADGJMPSVYBEHKNQTWZCFILORUXBEHKNQTWZCFILORUXADGJMPSVYBEHKNQTWZCFILORUXADGJMPSVYBEHKNQTWZCFILORUXADGJMPSVYBEHKNQTWZCFILORUXADGJMPSVYBEHKNQTWZCFILORUXADGJMPSVYBEHKNQTWZCFILORUXADGJMPSVYBEHKNQTWZCFILORUXADGJMPSVYBEHKNQTWZCFILORUXADGJMPSVYBEHKNQTWZCFILORUXADGJMPSVYCFILORUXADGJMPSVYBEHKNQTWZCFILORUXADGJMPSVYBEHKNQTWZCFILORUXADGJMPSVYBEHKNQTWZCFILORUXADGJMPSVYBEHKNQTWZCFILORUXADGJMPSVYBEHKNQTWZCFILORUXADGJMPSVYBEHKNQTWZCFILORUXADGJMPSVYBEHKNQTWZCFILORUXADGJMPSVYBEHKNQTWZCFILORUXADGJMPSVYBEHKNQTWZ'
         print(decrypt(text, key))
     else:
         exit()
@@ -30,33 +28,27 @@ def encrypt(text, key):
 
 
 
-def decrypt(text, key):
+def numOfRows(text, key):
     # get number of columns
-    if (len(text) % key) != 0:
-        columns = len(text) // key + 1
-    else:
-        columns = len(text) // key
-
-    # get empty cells indexes list
+    columns = math.ceil(len(text) / float(key))
     unused = key * columns - len(text)
-    matrix = list()
-    for column in range(columns):
-        for row in range(key):
-            matrix.append(row * columns + column)
-    empty = matrix[-unused:]
+    return(int(columns), int(unused))
 
-    # convert the string into list and insert "|" sign in place of empty cells
-    text = list(text)
-    for index in empty:
-        text.insert(index, "|")
 
-    # decrypt the message
-    lst = list()
-    for column in range(columns):
-        for row in range(key):
-            letter = text[row * columns + column]
-            lst.append(letter)
-    text = ''.join(lst).rstrip("|")
+
+def decrypt(text, key):
+    columns = numOfRows(text, key)[0]
+    unused = numOfRows(text, key)[1]
+    col, row = 0, 0
+    matrix = [''] * columns
+    for char in text:
+        matrix[col] += char
+        col += 1
+        if col == columns or (col == columns - 1 and row >= key - unused ):
+            row += 1
+            col = 0
+
+    text = ''.join(matrix)
 
     return(text)
 
